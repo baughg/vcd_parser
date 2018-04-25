@@ -35,6 +35,7 @@ namespace vcd {
     ~Variable();
     void add(const variable_component &comp);
     void build_component_lut();
+    bool add_watch(const std::string &watch);
   private:
     std::deque<variable_component> components_;
     std::vector<variable_component> component_list_;

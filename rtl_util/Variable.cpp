@@ -32,3 +32,8 @@ void Variable::build_component_lut()
     components_.pop_front();
   }
 }
+
+bool Variable::add_watch(const std::string &watch)
+{
+  return false;
+}
