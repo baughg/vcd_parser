@@ -1,5 +1,6 @@
 #ifndef VARIABLE_H
 #define VARIABLE_H
+#include "WatchVariable.h"
 #include <stdint.h>
 #include <string>
 #include <deque>
@@ -7,27 +8,6 @@
 #include <vector>
 
 namespace vcd {
-  typedef enum
-  {
-    INTEGER,
-    REG,
-    EVENT,
-    PARAMETER,
-    WIRE,
-    TIME,
-    REAL
-  }var_type;
-
-
-  typedef struct
-  {
-    var_type type;
-    uint32_t size;
-    char identifier_code[64];
-    char reference[256];
-    uint32_t scope_id;
-  }variable_component;
-
   class Variable
   {
   public:
@@ -36,10 +16,17 @@ namespace vcd {
     void add(const variable_component &comp);
     void build_component_lut();
     bool add_watch(const std::string &watch);
+    bool update_change(
+      const uint64_t &timestamp,
+      const std::string &identifier_code,
+      const std::string &bitstr);
   private:
+    std::vector<variable_component*> watch_list_;    
+    std::map<std::string, WatchVariable*> watch_variable_lut_;
     std::deque<variable_component> components_;
     std::vector<variable_component> component_list_;
     std::map<std::string, variable_component*> component_lut_;
+    std::map<std::string, variable_component*> component_lut_by_name_;
   };
 }
 #endif

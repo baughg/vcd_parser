@@ -150,12 +150,14 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Variable.h" />
     <ClInclude Include="vcd.h" />
+    <ClInclude Include="WatchVariable.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rtl_util.cpp" />
     <ClCompile Include="Scope.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Variable.cpp" />
+    <ClCompile Include="WatchVariable.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

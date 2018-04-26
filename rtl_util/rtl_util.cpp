@@ -73,6 +73,8 @@ bool read_vcd(const std::string &vcd_filename)
           state = vcd::DATA_SECTION;
           data_section = true;
           variable.build_component_lut();
+          variable.add_watch("idu_cmx_resp");
+          variable.add_watch("idu_cmx_req");
         }
 
 
@@ -168,6 +170,7 @@ bool read_vcd(const std::string &vcd_filename)
           break;
         case vcd::VAR_REFERENCE:
           reference = token;
+          sprintf(var_comp.name, "%s", reference.c_str());
           state = vcd::VAR_REG_BITS;
           break;
         case vcd::VAR_REG_BITS:
@@ -188,24 +191,23 @@ bool read_vcd(const std::string &vcd_filename)
     }
     else
     {
+      if (line_in[0] == '#')
+      {
+        state = vcd::SET_TIME_UNIT;
+        token = line_in.substr(1, line_in.length() - 1);
+        time_stamp = (uint64_t)atoi(token.c_str());
+        continue;
+      }
+
       while (std::getline(ss, token, ' ')) {
         if (!token.length())
           continue;
-
         
-
-        if (token[0] == '#')
-        {
-          state = vcd::SET_TIME_UNIT;
-          token = token.substr(1, token.length() - 1);
-          time_stamp = (uint64_t)atoi(token.c_str());
-          continue;
-        }
-        else if (token[0] == 'b')
+        if (token[0] == 'b')
         {
           state = vcd::UPDATE_VAR_BINARY;
         }
-        else if (strcmp(token.c_str(), "$dumpvars"))
+        else if (strcmp(token.c_str(), "$dumpvars") == 0)
         {
           continue;
         }
@@ -215,14 +217,19 @@ bool read_vcd(const std::string &vcd_filename)
         switch (state)
         {
         case vcd::UPDATE_VAR_BINARY:
-          bit_string = token;
+          bit_string = token.substr(1, token.length()-1);
           state = vcd::VAR_IDENTIFIER_CODE;
           break;
         case vcd::VAR_IDENTIFIER_CODE:
           identifier_code = token;
           state = vcd::NONE;
+          variable.update_change(time_stamp, identifier_code, bit_string);
           break;
         case vcd::UPDATE_VAR:
+          bit_string = token.substr(0, 1);
+          identifier_code = token.substr(1, token.length() - 1);
+          state = vcd::NONE;
+          variable.update_change(time_stamp, identifier_code, bit_string);
           break;
         }
       }
