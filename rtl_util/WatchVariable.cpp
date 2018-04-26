@@ -73,6 +73,7 @@ bool WatchVariable::write()
   }
 
   std::string filename = std::string(variable_.name);
+  filename.append(".bin");
 
   FILE* dump_file = NULL;
 
@@ -92,6 +93,8 @@ bool WatchVariable::write()
       fwrite(&change.timestamp, sizeof(change.timestamp), 1, dump_file);
       fwrite(&change.bitfield[0], sizeof(uint32_t), word_count_, dump_file);
     }
+
+    fclose(dump_file);
     return true;
   }
 
