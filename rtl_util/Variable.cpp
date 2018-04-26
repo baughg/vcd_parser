@@ -50,6 +50,7 @@ bool Variable::add_watch(const std::string &watch)
   WatchVariable* p_watch = new WatchVariable();
   p_watch->set_variable(*it->second);
   watch_variable_lut_[std::string(it->second->identifier_code)] = p_watch;
+  return true;
 }
 
 bool Variable::update_change(
