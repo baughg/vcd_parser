@@ -20,6 +20,7 @@ namespace vcd {
       const uint64_t &timestamp,
       const std::string &identifier_code,
       const std::string &bitstr);
+    void write_watch();
   private:
     std::vector<variable_component*> watch_list_;    
     std::map<std::string, WatchVariable*> watch_variable_lut_;

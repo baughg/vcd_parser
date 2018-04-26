@@ -239,6 +239,6 @@ bool read_vcd(const std::string &vcd_filename)
   }
 
   vcd_file.close();
- 
+  variable.write_watch();
   return true;
 }

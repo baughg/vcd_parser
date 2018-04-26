@@ -68,3 +68,13 @@ bool Variable::update_change(
   it->second->update_change(timestamp, bitstr);
   return true;
 }
+
+void Variable::write_watch()
+{
+  for (
+    std::map<std::string, WatchVariable*>::iterator iter = watch_variable_lut_.begin(); 
+    iter != watch_variable_lut_.end(); ++iter)
+  {
+    iter->second->write();
+  }
+}

@@ -1,4 +1,5 @@
 #include "WatchVariable.h"
+#include <stdio.h>
 
 using namespace vcd;
 
@@ -60,4 +61,39 @@ bool WatchVariable::update_change(
 
   signal_changes_.push_back(change);
   return true;
+}
+
+bool WatchVariable::write()
+{
+  const size_t changes = signal_changes_.size();
+
+  if (!changes)
+  {
+    return false;
+  }
+
+  std::string filename = std::string(variable_.name);
+
+  FILE* dump_file = NULL;
+
+  dump_file = fopen(filename.c_str(), "wb");
+  signal_change change;
+
+  if (dump_file)
+  {
+    fwrite(&variable_, sizeof(variable_), 1, dump_file);
+    uint32_t change_count = (uint32_t)changes;
+    fwrite(&change_count, sizeof(change_count), 1, dump_file);
+
+    for (uint32_t c = 0; c < change_count; ++c)
+    {
+      change = signal_changes_.front();
+      signal_changes_.pop_front();
+      fwrite(&change.timestamp, sizeof(change.timestamp), 1, dump_file);
+      fwrite(&change.bitfield[0], sizeof(uint32_t), word_count_, dump_file);
+    }
+    return true;
+  }
+
+  return false;
 }

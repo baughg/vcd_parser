@@ -44,6 +44,7 @@ namespace vcd {
     bool update_change(
       const uint64_t &timestamp,
       const std::string &bitstr);
+    bool write();
   private:
     variable_component variable_;
     uint32_t word_count_;
