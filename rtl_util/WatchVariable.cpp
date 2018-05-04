@@ -52,6 +52,9 @@ bool WatchVariable::update_change(
   for (uint32_t b = 0; b < bit_count_; ++b)
   {
     bit = *p_bitstr--;
+    if (bit == 'x')
+      bit = '0';
+
     bit -= '0';
     byte_index = b >> 3;
     bit_index = b % 8;

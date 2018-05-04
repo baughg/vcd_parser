@@ -73,8 +73,8 @@ bool read_vcd(const std::string &vcd_filename)
           state = vcd::DATA_SECTION;
           data_section = true;
           variable.build_component_lut();
-          variable.add_watch("idu_cmx_resp");
-          variable.add_watch("idu_cmx_req");
+          variable.add_watch("nn_ap_i");
+          variable.add_watch("nn_ap_o");
         }
 
 
