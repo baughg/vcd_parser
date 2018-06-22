@@ -17,20 +17,25 @@ void Variable::add(const variable_component &comp)
 }
 
 
-void Variable::build_component_lut()
+void Variable::build_component_lut(vcd::Scope &scope)
 {
   const size_t components = components_.size();
 
   component_list_.resize(components);
   variable_component comp;
   watch_list_.reserve(64);
+  std::string scope_name;
 
   for (size_t c = 0; c < components; ++c)
   {
     comp = components_.front();
     component_list_[c] = comp;
+    
+    scope.get_name(comp.scope_id, scope_name);
     component_lut_[std::string(comp.identifier_code)] = &component_list_[c];
-    component_lut_by_name_[std::string(comp.name)] = &component_list_[c];
+    scope_name.append(std::string(comp.name));
+    component_lut_by_name_[scope_name] = &component_list_[c];
+    sprintf(component_list_[c].long_name, "%s", scope_name.c_str());
     components_.pop_front();
   }
 }

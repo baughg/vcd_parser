@@ -17,7 +17,7 @@ bool read_vcd(const std::string &vcd_filename);
 
 int main()
 {
-  read_vcd("waves.vcd"); 
+  read_vcd("ts_hello_world.vcd"); 
   return 0;
 }
 
@@ -44,6 +44,7 @@ bool read_vcd(const std::string &vcd_filename)
 
   if (!vcd_file.good())
     return false;
+  uint32_t line_no = 0;
 
   while (!vcd_file.eof()) {
     getline(vcd_file, line_in);
@@ -51,6 +52,8 @@ bool read_vcd(const std::string &vcd_filename)
     std::istringstream ss(line_in);
     std::string token;
 
+    line_no++;
+    
     if (!data_section) {
       while (std::getline(ss, token, ' ')) {
         if (!token.length())
@@ -72,9 +75,19 @@ bool read_vcd(const std::string &vcd_filename)
         {
           state = vcd::DATA_SECTION;
           data_section = true;
-          variable.build_component_lut();
-          variable.add_watch("nn_ap_i");
-          variable.add_watch("nn_ap_o");
+          scope.build_long_name();
+          variable.build_component_lut(scope);
+          //variable.add_watch("nn_ap_i");
+          //variable.add_watch("nn_ap_o");
+          //variable.add_watch("shave_ap_i");
+          //variable.add_watch("shave_ap_o");
+          variable.add_watch("tc_shave_asm.shave_dut.psel");
+          variable.add_watch("tc_shave_asm.shave_dut.penable");
+          variable.add_watch("tc_shave_asm.shave_dut.paddr");
+          variable.add_watch("tc_shave_asm.shave_dut.pwrite");
+          variable.add_watch("tc_shave_asm.shave_dut.pwdata");
+          variable.add_watch("tc_shave_asm.shave_dut.prdata");
+          variable.add_watch("tc_shave_asm.shave_dut.pready");
         }
 
 
@@ -110,6 +123,10 @@ bool read_vcd(const std::string &vcd_filename)
           else if (strcmp(token.c_str(), "function") == 0)
           {
             scope_comp.type = vcd::FUNCTION;
+          }
+          else if (strcmp(token.c_str(), "begin") == 0)
+          {
+            scope_comp.type = vcd::BEGIN;
           }
           else
             state = vcd::NONE;

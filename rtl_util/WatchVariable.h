@@ -24,6 +24,7 @@ namespace vcd {
     char identifier_code[64];
     char reference[256];
     char name[256];
+    char long_name[1024];
     uint32_t scope_id;
   }variable_component;
 

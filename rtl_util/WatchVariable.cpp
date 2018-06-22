@@ -75,7 +75,7 @@ bool WatchVariable::write()
     return false;
   }
 
-  std::string filename = std::string(variable_.name);
+  std::string filename = std::string(variable_.long_name);
   filename.append(".bin");
 
   FILE* dump_file = NULL;

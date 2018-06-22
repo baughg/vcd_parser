@@ -1,6 +1,7 @@
 #ifndef VARIABLE_H
 #define VARIABLE_H
 #include "WatchVariable.h"
+#include "Scope.h"
 #include <stdint.h>
 #include <string>
 #include <deque>
@@ -14,7 +15,7 @@ namespace vcd {
     Variable();
     ~Variable();
     void add(const variable_component &comp);
-    void build_component_lut();
+    void build_component_lut(vcd::Scope &scope);
     bool add_watch(const std::string &watch);
     bool update_change(
       const uint64_t &timestamp,
