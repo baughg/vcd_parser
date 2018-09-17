@@ -30,7 +30,10 @@ void Variable::build_component_lut(vcd::Scope &scope)
   {
     comp = components_.front();
     component_list_[c] = comp;
-    
+
+    if (strcmp(comp.name, "mysignal") == 0)
+        printf("hit\n");
+
     scope.get_name(comp.scope_id, scope_name);
     component_lut_[std::string(comp.identifier_code)] = &component_list_[c];
     scope_name.append(std::string(comp.name));

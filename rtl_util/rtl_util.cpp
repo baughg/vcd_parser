@@ -17,7 +17,9 @@ bool read_vcd(const std::string &vcd_filename);
 
 int main()
 {
-  read_vcd("ts_hello_world.vcd"); 
+  //read_vcd("ts_hello_world.vcd"); 
+  //read_vcd("Vnce_dpu_trace_ext_256.vcd");
+    read_vcd("waves_dw_conv.vcd");
   return 0;
 }
 
@@ -26,7 +28,7 @@ bool read_vcd(const std::string &vcd_filename)
   std::ifstream vcd_file(vcd_filename.c_str());
 
   std::string line_in;
- 
+
   uint32_t scope_level = 0;
   uint32_t scope_id = 0;
   uint32_t parent_id = 0;
@@ -53,7 +55,7 @@ bool read_vcd(const std::string &vcd_filename)
     std::string token;
 
     line_no++;
-    
+
     if (!data_section) {
       while (std::getline(ss, token, ' ')) {
         if (!token.length())
@@ -77,17 +79,7 @@ bool read_vcd(const std::string &vcd_filename)
           data_section = true;
           scope.build_long_name();
           variable.build_component_lut(scope);
-          //variable.add_watch("nn_ap_i");
-          //variable.add_watch("nn_ap_o");
-          //variable.add_watch("shave_ap_i");
-          //variable.add_watch("shave_ap_o");
-          variable.add_watch("tc_shave_asm.shave_dut.psel");
-          variable.add_watch("tc_shave_asm.shave_dut.penable");
-          variable.add_watch("tc_shave_asm.shave_dut.paddr");
-          variable.add_watch("tc_shave_asm.shave_dut.pwrite");
-          variable.add_watch("tc_shave_asm.shave_dut.pwdata");
-          variable.add_watch("tc_shave_asm.shave_dut.prdata");
-          variable.add_watch("tc_shave_asm.shave_dut.pready");
+          variable.add_watch("mysignal");
         }
 
 
@@ -219,7 +211,7 @@ bool read_vcd(const std::string &vcd_filename)
       while (std::getline(ss, token, ' ')) {
         if (!token.length())
           continue;
-        
+
         if (token[0] == 'b')
         {
           state = vcd::UPDATE_VAR_BINARY;
@@ -228,13 +220,13 @@ bool read_vcd(const std::string &vcd_filename)
         {
           continue;
         }
-        else if(state != vcd::VAR_IDENTIFIER_CODE)
+        else if (state != vcd::VAR_IDENTIFIER_CODE)
           state = vcd::UPDATE_VAR;
 
         switch (state)
         {
         case vcd::UPDATE_VAR_BINARY:
-          bit_string = token.substr(1, token.length()-1);
+          bit_string = token.substr(1, token.length() - 1);
           state = vcd::VAR_IDENTIFIER_CODE;
           break;
         case vcd::VAR_IDENTIFIER_CODE:
