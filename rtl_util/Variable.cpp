@@ -31,7 +31,7 @@ void Variable::build_component_lut(vcd::Scope &scope)
     comp = components_.front();
     component_list_[c] = comp;
 
-    if (strcmp(comp.name, "mysignal") == 0)
+    if (strcmp(comp.name, "mysignal1") == 0)
         printf("hit\n");
 
     scope.get_name(comp.scope_id, scope_name);

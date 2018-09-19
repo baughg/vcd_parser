@@ -62,7 +62,7 @@ void Scope::build_long_name()
 
     for (int32_t n = names_cnt; n >= 0; n--)
     {
-      long_name.append(names[n]);
+      long_name.append(names[n]);      
       long_name.append(".");
     }
 

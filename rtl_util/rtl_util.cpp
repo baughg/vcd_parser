@@ -12,6 +12,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <deque>
 
 bool read_vcd(const std::string &vcd_filename);
 
@@ -19,7 +20,7 @@ int main()
 {
   //read_vcd("ts_hello_world.vcd"); 
   //read_vcd("Vnce_dpu_trace_ext_256.vcd");
-    read_vcd("waves_dw_conv.vcd");
+    read_vcd("Vnce_dpu_mp_working.vcd");
   return 0;
 }
 
@@ -32,6 +33,7 @@ bool read_vcd(const std::string &vcd_filename)
   uint32_t scope_level = 0;
   uint32_t scope_id = 0;
   uint32_t parent_id = 0;
+  std::deque<uint32_t> scope_parent_list;
   uint64_t time_stamp = 1ULL;
 
   vcd::vcd_parse_state state = vcd::NONE;
@@ -53,9 +55,9 @@ bool read_vcd(const std::string &vcd_filename)
     //printf("%s\n", line_in.c_str());
     std::istringstream ss(line_in);
     std::string token;
-
+    
     line_no++;
-
+    
     if (!data_section) {
       while (std::getline(ss, token, ' ')) {
         if (!token.length())
@@ -79,7 +81,7 @@ bool read_vcd(const std::string &vcd_filename)
           data_section = true;
           scope.build_long_name();
           variable.build_component_lut(scope);
-          variable.add_watch("mysignal");
+          variable.add_watch("mysignal1");
         }
 
 
@@ -88,21 +90,24 @@ bool read_vcd(const std::string &vcd_filename)
         case vcd::SCOPE:
           state = vcd::SCOPE_TYPE;
           scope_level++;
+                   
+          parent_id = 0;
 
-          if (scope_level > 1 && !parent_id)
-            parent_id = scope_id;
-
+          if (scope_parent_list.size())
+          {
+              parent_id = scope_parent_list.back();
+          }
           scope_id++;
           scope_comp.id = scope_id;
           scope_comp.parent_id = parent_id;
+          scope_parent_list.push_back(scope_id);
           break;
         case vcd::UPSCOPE:
           if (scope_level)
             scope_level--;
 
-          if (!scope_level)
-            parent_id = 0;
-
+          if (scope_parent_list.size())
+              scope_parent_list.pop_back();
           state = vcd::END;
           break;
         case vcd::SCOPE_TYPE:
