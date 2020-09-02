@@ -13,19 +13,37 @@
 #include <string>
 #include <sstream>
 #include <deque>
+#include <cassert>
+#include <iostream>
 
-bool read_vcd(const std::string &vcd_filename);
+bool read_vcd(const std::string &vcd_filename, const std::deque<std::string> &dump_signals);
+bool read_command_file(std::string cmd_filename, std::vector<std::string> &command_list);
 
-int main()
+int main(int argc, char** argv)
 {
-  //read_vcd("ts_hello_world.vcd"); 
-  //read_vcd("Vnce_dpu_trace_ext_256.vcd");
-    //read_vcd("Vnce_dpu.vcd");
-  read_vcd("mobilenetV2_cm-dw-zm_int8_2x1.vcd");
+  std::string cmd_filename{ "vcdparse.cmd" };
+
+  if (argc >= 2) {
+    cmd_filename = std::string{ argv[1] };
+  }
+
+  std::vector<std::string> command_list;
+
+  if (read_command_file(cmd_filename, command_list)) {
+    std::deque<std::string> dump_signals;
+    auto signal_it{ command_list.begin() };
+    signal_it++;
+
+    for (; signal_it != command_list.end(); signal_it++) {
+      dump_signals.push_back(*signal_it);
+    }
+
+    read_vcd(command_list[0], dump_signals);
+  }
   return 0;
 }
 
-bool read_vcd(const std::string &vcd_filename)
+bool read_vcd(const std::string &vcd_filename, const std::deque<std::string> &dump_signals)
 {
   std::ifstream vcd_file(vcd_filename.c_str());
 
@@ -50,6 +68,8 @@ bool read_vcd(const std::string &vcd_filename)
   if (!vcd_file.good())
     return false;
   uint32_t line_no = 0;
+
+  std::cout << "Reading VCD: " << vcd_filename << std::endl;
 
   while (!vcd_file.eof()) {
     getline(vcd_file, line_in);
@@ -82,13 +102,20 @@ bool read_vcd(const std::string &vcd_filename)
           data_section = true;
           scope.build_long_name();
           variable.build_component_lut(scope);
-          //variable.add_watch("mysignal1");
-          //variable.add_watch("TOP.nce_dpu.idu_cmx_req");
-          //variable.add_watch("TOP.nce_dpu.idu_cmx_resp");
-          variable.add_watch("vpu_core_tb.vpu_core_th_i.vpu_core_i.nce_i.generate_dpu[0].genblk1.i_nce_dpu.nce_dpu_core_i.i_nce_idu.cmx_req");
-          variable.add_watch("vpu_core_tb.vpu_core_th_i.vpu_core_i.nce_i.generate_dpu[0].genblk1.i_nce_dpu.nce_dpu_core_i.i_nce_idu.cmx_resp");   
-          //variable.add_watch("dpu_test_harness.i_nce_dpu.idu_cmx_req");
-          //variable.add_watch("dpu_test_harness.i_nce_dpu.idu_cmx_resp");       
+
+          for (auto it{ dump_signals.begin() }; it != dump_signals.end(); it++) {
+            if (!variable.add_watch(*it)) {
+              std::cerr << "Could not find signal " << *it << std::endl;
+              assert(false);
+            }
+            else {
+              std::cout << "Added watch signal: " << *it << std::endl;
+            }
+          }
+          //variable.add_watch("mysignal1");          
+          //variable.add_watch("vpu_core_tb.vpu_core_th_i.vpu_core_i.nce_i.generate_dpu[0].genblk1.i_nce_dpu.nce_dpu_core_i.i_nce_idu.cmx_req");
+          //variable.add_watch("vpu_core_tb.vpu_core_th_i.vpu_core_i.nce_i.generate_dpu[0].genblk1.i_nce_dpu.nce_dpu_core_i.i_nce_idu.cmx_resp");   
+
         }
 
 
@@ -262,4 +289,31 @@ bool read_vcd(const std::string &vcd_filename)
   vcd_file.close();
   variable.write_watch();
   return true;
+}
+
+
+
+bool read_command_file(std::string cmd_filename, std::vector<std::string> &command_list) {
+  const std::string command_list_file{ cmd_filename };
+
+  std::ifstream cmd_file(command_list_file.c_str());
+
+  std::string line_in;
+
+  if (!cmd_file.good())
+    return false;
+
+  uint32_t line_no{};
+  command_list.reserve(64);
+
+  while (!cmd_file.eof()) {
+    getline(cmd_file, line_in);
+
+    if (line_in.length() > 0) {
+      command_list.push_back(line_in);
+    }
+    line_no++;
+  }
+
+  return line_no >= 2;
 }
