@@ -112,10 +112,7 @@ bool read_vcd(const std::string &vcd_filename, const std::deque<std::string> &du
               std::cout << "Added watch signal: " << *it << std::endl;
             }
           }
-          //variable.add_watch("mysignal1");          
-          //variable.add_watch("vpu_core_tb.vpu_core_th_i.vpu_core_i.nce_i.generate_dpu[0].genblk1.i_nce_dpu.nce_dpu_core_i.i_nce_idu.cmx_req");
-          //variable.add_watch("vpu_core_tb.vpu_core_th_i.vpu_core_i.nce_i.generate_dpu[0].genblk1.i_nce_dpu.nce_dpu_core_i.i_nce_idu.cmx_resp");   
-
+          //variable.add_watch("mysignal1");
         }
 
 
