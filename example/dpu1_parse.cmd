@@ -1,0 +1,9 @@
+dpu1.vcd
+vpu_core_tb.vpu_core_th_i.vpu_core_i.nce_i.generate_dpu[1].genblk1.i_nce_dpu.nce_dpu_core_i.i_nce_dpu_ctrl.sc_req0
+vpu_core_tb.vpu_core_th_i.vpu_core_i.nce_i.generate_dpu[1].genblk1.i_nce_dpu.nce_dpu_core_i.i_nce_dpu_ctrl.sc_rsp0
+vpu_core_tb.vpu_core_th_i.vpu_core_i.nce_i.generate_dpu[1].genblk1.i_nce_dpu.nce_dpu_core_i.i_nce_idu.cmx_req
+vpu_core_tb.vpu_core_th_i.vpu_core_i.nce_i.generate_dpu[1].genblk1.i_nce_dpu.nce_dpu_core_i.i_nce_idu.cmx_resp
+vpu_core_tb.vpu_core_th_i.vpu_core_i.nce_i.generate_dpu[1].genblk1.i_nce_dpu.nce_dpu_core_i.i_nce_idu.workload_start
+vpu_core_tb.vpu_core_th_i.vpu_core_i.nce_i.generate_dpu[1].genblk1.i_nce_dpu.nce_dpu_core_i.i_nce_odu.status
+vpu_core_tb.vpu_core_th_i.vpu_core_i.nce_i.generate_dpu[1].genblk1.i_nce_dpu.nce_dpu_core_i.i_nce_odu.cmx_req
+vpu_core_tb.vpu_core_th_i.vpu_core_i.nce_i.generate_dpu[1].genblk1.i_nce_dpu.nce_dpu_core_i.i_nce_odu.cmx_resp
